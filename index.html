@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nguyễn Thừa Hoàng - Portfolio</title>
+    <!-- Tích hợp Google Fonts hiện đại -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;800&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* ================= CƠ BẢN ================= */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body, html {
+            width: 100%; height: 100%;
+            font-family: 'Outfit', sans-serif;
+            color: #e2e8f0;
+            background-color: #020617;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* ================= HIỆU ỨNG NỀN VÀ BẦU TRỜI ================= */
+        .background-image {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            /* Nebula gradient vũ trụ thuần CSS — không cần ảnh ngoài */
+            background: 
+                radial-gradient(ellipse at 20% 35%, rgba(130, 40, 210, 0.65) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 15%, rgba(30, 80, 200, 0.6) 0%, transparent 45%),
+                radial-gradient(ellipse at 55% 85%, rgba(20, 90, 170, 0.5) 0%, transparent 40%),
+                radial-gradient(ellipse at 90% 75%, rgba(80, 20, 150, 0.45) 0%, transparent 40%),
+                radial-gradient(ellipse at 10% 80%, rgba(10, 60, 130, 0.4) 0%, transparent 45%),
+                #030c1a;
+            z-index: -3;
+            animation: slowZoom 30s infinite alternate;
+        }
+        @keyframes slowZoom {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            /* Overlay nhẹ — không che sao */
+            background: radial-gradient(circle at center, rgba(3, 12, 26, 0.1) 0%, rgba(3, 12, 26, 0.45) 100%);
+            z-index: -2;
+        }
+
+        .night-sky {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            /* z-index: 1 để sao hiện rõ phía trên nền */
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* ================= MÀN HÌNH CHỜ (INTRO SCREEN) ================= */
+        #intro-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            /* Không dùng backdrop-filter — tránh blur sao phía sau */
+            background: radial-gradient(ellipse at center, rgba(3, 12, 26, 0.15) 0%, rgba(3, 12, 26, 0.55) 100%);
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        #start-btn {
+            background: rgba(2, 6, 23, 0.6);
+            color: #f5b759;
+            border: 1px solid #f5b759;
+            padding: 18px 45px;
+            font-size: 1.2rem;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            letter-spacing: 5px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(245, 183, 89, 0.3), inset 0 0 10px rgba(245, 183, 89, 0.1);
+            text-transform: uppercase;
+        }
+
+        #start-btn:hover {
+            background: rgba(245, 183, 89, 0.15);
+            box-shadow: 0 0 30px rgba(245, 183, 89, 0.6), inset 0 0 20px rgba(245, 183, 89, 0.4);
+            transform: scale(1.05);
+        }
+
+        /* ================= BỐ CỤC CHÍNH ================= */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+            display: none; 
+            flex-direction: column; gap: 60px;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        /* ================= GIAO DIỆN KÍNH (GLASSMORPHISM) ================= */
+        section {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 50px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        section:hover {
+            transform: translateY(-5px);
+            border-color: rgba(100, 210, 255, 0.4);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), 0 0 25px rgba(100, 210, 255, 0.15);
+        }
+        
+        main.active section { animation: fadeInUp 1s ease-out forwards; }
+        main.active section:nth-child(1) { animation-delay: 0.1s; }
+        main.active section:nth-child(2) { animation-delay: 0.3s; }
+        main.active section:nth-child(3) { animation-delay: 0.5s; }
+        main.active section:nth-child(4) { animation-delay: 0.7s; }
+
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+
+        /* ================= TYPOGRAPHY ================= */
+        h1, h2, h3, .stat-number { font-family: 'Space Grotesk', sans-serif; }
+        .tagline { 
+            color: #38bdf8; font-weight: 700; text-transform: uppercase; 
+            font-size: 0.85rem; letter-spacing: 3px; margin-bottom: 20px; display: block; 
+        }
+        h1 { 
+            font-size: 3.2rem; line-height: 1.2; margin-bottom: 25px; 
+            background: linear-gradient(135deg, #ffffff 0%, #93c5fd 100%); 
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
+        }
+        p { font-size: 1.15rem; line-height: 1.8; color: #cbd5e1; margin-bottom: 20px; font-weight: 300; }
+        h2 { 
+            font-size: 2.2rem; margin-bottom: 40px; 
+            display: inline-block;
+            border-bottom: 3px solid rgba(56, 189, 248, 0.3); 
+            padding-bottom: 10px; 
+        }
+        h3 { font-size: 1.3rem; margin-bottom: 20px; color: #e0f2fe; line-height: 1.4; }
+
+        /* ================= TRÁI ĐẤT 3D ================= */
+        .hero-layout { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 40px; }
+        .hero-text { flex: 1 1 550px; }
+        
+        .earth-container {
+            flex: 1 1 300px;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .earth {
+            width: 320px; height: 320px;
+            border-radius: 50%;
+            /* Texture Trái Đất độ phân giải cao trực tuyến */
+            background: url('https://upload.wikimedia.org/wikipedia/commons/c/c3/Solarsystemscope_texture_2k_earth_daymap.jpg');
+            background-size: 200% 100%;
+            /* Nâng cấp đổ bóng để Trái Đất trông lung linh, nổi khối 3D hơn */
+            box-shadow: inset -30px -30px 50px rgba(0,0,0,0.9), 
+                        inset 0px 0px 20px rgba(255,255,255,0.3), 
+                        0 0 60px rgba(56, 189, 248, 0.5);
+            animation: spinEarth 24s linear infinite;
+        }
+        @keyframes spinEarth {
+            0% { background-position: 0% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        /* ================= THẺ THỐNG KÊ (STATS) ================= */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; }
+        .stat-card {
+            background: linear-gradient(145deg, rgba(15, 23, 42, 0.6), rgba(2, 6, 23, 0.8));
+            padding: 35px 20px; border-radius: 20px;
+            text-align: center; border: 1px solid rgba(255,255,255,0.05);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+        .stat-card:hover { transform: translateY(-5px); border-color: rgba(56, 189, 248, 0.5); }
+        .stat-number { font-size: 2.5rem; font-weight: 700; color: #fff; line-height: 1.2; margin-bottom: 10px; }
+        .stat-label { color: #38bdf8; font-weight: 600; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .stat-desc { font-size: 0.95rem; color: #94a3b8; }
+
+        /* ================= THẺ KỸ NĂNG (SKILLS) ================= */
+        .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .skill-category { 
+            background: rgba(15, 23, 42, 0.4); 
+            padding: 35px; border-radius: 20px; 
+            border: 1px solid rgba(255,255,255,0.03);
+            transition: background 0.3s ease;
+        }
+        .skill-category:hover { background: rgba(15, 23, 42, 0.6); }
+        ul { list-style: none; }
+        ul li { position: relative; padding-left: 30px; margin-bottom: 16px; font-size: 1.1rem; color: #cbd5e1; }
+        ul li::before { 
+            content: "✦"; position: absolute; left: 0; top: 2px;
+            color: #38bdf8; font-size: 1rem;
+        }
+
+        /* ================= NÚT LIÊN HỆ ================= */
+        .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; margin-top: 40px; }
+        .contact-card {
+            display: flex; flex-direction: column; justify-content: center;
+            background: rgba(255, 255, 255, 0.05); padding: 30px; border-radius: 20px;
+            text-decoration: none; color: #fff; transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.1);
+            position: relative; overflow: hidden;
+        }
+        .contact-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(56, 189, 248, 0.1), transparent);
+            transform: translateX(-100%); transition: transform 0.6s ease;
+        }
+        .contact-card:hover::before { transform: translateX(100%); }
+        .contact-card:hover { 
+            background: rgba(56, 189, 248, 0.1); 
+            border-color: #38bdf8; 
+            box-shadow: 0 10px 30px rgba(56, 189, 248, 0.15);
+        }
+        .contact-type { font-size: 0.85rem; text-transform: uppercase; color: #93c5fd; letter-spacing: 1px; margin-bottom: 12px; }
+        .contact-value { font-size: 1.25rem; font-weight: 600; }
+
+        /* ================= RESPONSIVE ================= */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            section { padding: 40px 25px; }
+            .earth { width: 260px; height: 260px; }
+            main { padding: 30px 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Lớp nền vô cực và sao băng -->
+    <div class="background-image"></div>
+    <div class="overlay"></div>
+    <canvas class="night-sky" id="starCanvas"></canvas>
+
+    <!-- Màn Hình Chờ (Cover Screen) -->
+    <div id="intro-screen">
+        <button id="start-btn">NHẤP ĐỂ BẮT ĐẦU</button>
+    </div>
+
+    <!-- Nội dung chính Portfolio -->
+    <main id="main-content">
+        <!-- Khối Giới Thiệu -->
+        <section>
+            <div class="hero-layout">
+                <div class="hero-text">
+                    <span class="tagline">Nhật Ký Hành Trình // Nguyễn Thừa Hoàng</span>
+                    <h1>Portfolio <br> Nguyễn Thừa Hoàng</h1>
+                    <!-- Đã bổ sung IELTS 7.0 vào dòng giới thiệu -->
+                    <p>Sinh viên Năm 4 Kinh tế Quốc tế & Kế toán - Kiểm toán @ FTU | Phân tích Dữ liệu | Web Dev | <strong>IELTS 7.0</strong></p>
+                    <p>Đam mê nghiên cứu Kinh tế vĩ mô, FDI xanh và Tài chính quốc tế. Kết hợp tư duy logic qua lập trình Python, thiết kế giao diện Web (HTML/Tailwind), và nền tảng Kế toán kép để giải quyết các bài toán kinh tế thực tiễn.</p>
+                </div>
+                
+                <div class="earth-container">
+                    <div class="earth"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Khối Chỉ Số -->
+        <section>
+            <h2>Bảng Báo Cáo Thành Tích</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">Năm 4</div>
+                    <div class="stat-label">Học Vấn FTU</div>
+                    <div class="stat-desc">Sinh viên song bằng Kinh tế Quốc tế & Kế toán</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">7.0</div>
+                    <div class="stat-label">IELTS Overall</div>
+                    <div class="stat-desc">Đạt mục tiêu (6.0 → 7.0 trong 4 tháng)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">Web</div>
+                    <div class="stat-label">TutorLink Project</div>
+                    <div class="stat-desc">Xây dựng & phát triển nền tảng kết nối gia sư</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">HSK 3</div>
+                    <div class="stat-label">Ngoại Ngữ</div>
+                    <div class="stat-desc">Sử dụng linh hoạt Tiếng Trung & Tiếng Anh</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Khối Kỹ Năng -->
+        <section>
+            <span class="tagline">// Viễn Trắc Hệ Thống</span>
+            <h2>Bảng Điều Khiển Năng Lực</h2>
+            <div class="skills-grid">
+                <div class="skill-category">
+                    <h3>Kinh Tế & Tài Chính</h3>
+                    <ul>
+                        <li>Kinh tế lượng (Mô hình OLS, FEM, REM)</li>
+                        <li>Phân tích Tài chính & Kế toán kép</li>
+                        <li>Nghiên cứu Kinh tế vĩ mô & FDI</li>
+                    </ul>
+                </div>
+                <div class="skill-category">
+                    <h3>Công Nghệ & Dữ Liệu</h3>
+                    <ul>
+                        <li>Lập trình Python (Data Structures, Thuật toán)</li>
+                        <li>Phát triển Web Frontend (HTML, Tailwind CSS)</li>
+                        <li>Phân tích logic & Quản trị cơ sở dữ liệu</li>
+                    </ul>
+                </div>
+                <div class="skill-category">
+                    <h3>Kỹ Năng Mềm & Đam Mê</h3>
+                    <ul>
+                        <li>Tư duy giải quyết vấn đề sắc bén</li>
+                        <li>Giảng dạy & Truyền cảm hứng (IELTS, HSK)</li>
+                        <li>Chơi nhạc cụ (Guitar Acoustic Fingerstyle)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Khối Liên Hệ -->
+        <section>
+            <span class="tagline">Liên Hệ</span>
+            <h2>Thông Tin Liên Hệ</h2>
+            <p>Hãy kết nối với tôi qua các kênh liên lạc dưới đây.</p>
+            
+            <div class="contact-grid">
+                <a href="tel:0334486832" class="contact-card">
+                    <span class="contact-type">Số Điện Thoại</span>
+                    <span class="contact-value">0334 486 832</span>
+                </a>
+                <a href="mailto:thuahoang09@gmail.com" class="contact-card">
+                    <span class="contact-type">Email</span>
+                    <span class="contact-value">thuahoang09@gmail.com</span>
+                </a>
+                <a href="https://www.facebook.com/nguyen.thua.hoang.829575" target="_blank" class="contact-card">
+                    <span class="contact-type">Facebook</span>
+                    <span class="contact-value">Nguyễn Thừa Hoàng</span>
+                </a>
+            </div>
+            
+            <div style="text-align: center; margin-top: 60px; color: #64748b; font-family: 'Space Grotesk'; font-size: 0.9rem; letter-spacing: 2px; text-transform: uppercase;">
+                Kết Thúc Nhật Ký Hành Trình // Nguyễn Thừa Hoàng
+            </div>
+        </section>
+    </main>
+
+    <!-- Kịch bản xử lý Sự kiện & Sao Băng -->
+    <script>
+        // Xử lý màn hình chờ (Intro Screen)
+        const startBtn = document.getElementById('start-btn');
+        const introScreen = document.getElementById('intro-screen');
+        const mainContent = document.getElementById('main-content');
+
+        startBtn.addEventListener('click', () => {
+            introScreen.style.opacity = '0';
+            introScreen.style.visibility = 'hidden';
+            
+            setTimeout(() => {
+                introScreen.style.display = 'none';
+                mainContent.style.display = 'flex';
+                void mainContent.offsetWidth; 
+                mainContent.style.opacity = '1';
+                mainContent.classList.add('active');
+            }, 800);
+        });
+
+        // ===== HỆ THỐNG SAO =====
+        const canvas = document.getElementById('starCanvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let staticStars = [];
+        let shootingStars = [];
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            initStaticStars();
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        // --- Sao tĩnh nhấp nháy ---
+        class StaticStar {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.baseRadius = Math.random() * 1.4 + 0.2;
+                this.opacity = Math.random() * 0.6 + 0.2;
+                this.twinkleSpeed = Math.random() * 0.012 + 0.003;
+                this.twinkleDir = Math.random() > 0.5 ? 1 : -1;
+                // Một số sao có màu xanh/vàng nhẹ
+                const hues = [0, 0, 0, 210, 200, 45];
+                this.hue = hues[Math.floor(Math.random() * hues.length)];
+                this.sat = this.hue === 0 ? 0 : 70;
+            }
+            update() {
+                this.opacity += this.twinkleSpeed * this.twinkleDir;
+                if (this.opacity >= 0.9) { this.opacity = 0.9; this.twinkleDir = -1; }
+                if (this.opacity <= 0.05) { this.opacity = 0.05; this.twinkleDir = 1; }
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.baseRadius, 0, Math.PI * 2);
+                ctx.fillStyle = `hsla(${this.hue}, ${this.sat}%, 95%, ${this.opacity})`;
+                ctx.fill();
+            }
+        }
+
+        function initStaticStars() {
+            staticStars = [];
+            const count = Math.floor((width * height) / 4000); // mật độ theo diện tích
+            for (let i = 0; i < count; i++) {
+                staticStars.push(new StaticStar());
+            }
+        }
+
+        // --- Sao băng ---
+        class ShootingStar {
+            constructor(immediate = false) {
+                this.reset(immediate);
+            }
+            reset(immediate = false) {
+                // Bắt đầu từ vị trí bên trong hoặc trên màn hình
+                if (immediate) {
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * height * 0.5;
+                } else {
+                    this.x = Math.random() * width * 1.3 + width * 0.1;
+                    this.y = Math.random() * height * 0.3 - height * 0.05;
+                }
+                this.length = Math.random() * 110 + 40;
+                this.speed = Math.random() * 11 + 7;
+                this.angle = Math.PI / 4;
+                this.opacity = Math.random() * 0.7 + 0.3;
+                this.thickness = Math.random() * 2.5 + 0.8;
+                this.active = true;
+            }
+            draw() {
+                if (!this.active) return;
+                ctx.save();
+                ctx.beginPath();
+                const tailX = this.x - Math.cos(this.angle) * this.length;
+                const tailY = this.y + Math.sin(this.angle) * this.length;
+                ctx.moveTo(this.x, this.y);
+                ctx.lineTo(tailX, tailY);
+                const grad = ctx.createLinearGradient(this.x, this.y, tailX, tailY);
+                grad.addColorStop(0, `rgba(220, 240, 255, ${this.opacity})`);
+                grad.addColorStop(1, 'rgba(220, 240, 255, 0)');
+                ctx.strokeStyle = grad;
+                ctx.lineWidth = this.thickness;
+                ctx.stroke();
+                // Đầu sao sáng
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.thickness * 1.6, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                ctx.shadowBlur = 14;
+                ctx.shadowColor = '#b3e0ff';
+                ctx.fill();
+                ctx.restore();
+            }
+            update() {
+                if (!this.active) return;
+                this.x -= Math.cos(this.angle) * this.speed;
+                this.y += Math.sin(this.angle) * this.speed;
+                if (this.x < -250 || this.y > height + 250) {
+                    this.active = false;
+                    setTimeout(() => this.reset(), Math.random() * 3500 + 500);
+                }
+            }
+        }
+
+        // Khởi tạo: 6 sao băng hiện ngay, 19 sao băng xuất hiện dần
+        for (let i = 0; i < 6; i++) shootingStars.push(new ShootingStar(true));
+        for (let i = 0; i < 19; i++) {
+            const s = new ShootingStar(false);
+            s.active = false;
+            setTimeout(() => { s.active = true; }, Math.random() * 5000 + 200);
+            shootingStars.push(s);
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            // Vẽ sao tĩnh trước
+            for (let s of staticStars) { s.update(); s.draw(); }
+            // Vẽ sao băng lên trên
+            for (let s of shootingStars) { s.update(); s.draw(); }
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>
